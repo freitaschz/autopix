@@ -1,13 +1,11 @@
 name: AutoPix
-version: 1.0.26
+version: 1.0.27
 main: io.github.warleysr.autopix.AutoPix
 author: warleysr
 api-version: 1.13
 softdepend: [PlaceholderAPI]
 commands:
   autopix:
-    description: Valida uma transação realizada por PIX
-    aliases: [ap, pix]
+    description: Valida uma transação realizada por PIX.
   autopixmenu:
-    description: Abre o menu de produtos disponíveis para compra por PIX
-    aliases: [comprarpix]
+    description: Abre o menu de produtos disponíveis para compra por PIX.

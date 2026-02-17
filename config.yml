@@ -36,9 +36,16 @@ tempos:
   cancelar: 30
   top: 30
 
+aliases-comandos:
+  autopix:
+    - ap
+  autopixmenu:
+    - apm
+    - apmenu
+
 # Mapa de pagamento
 mapa:
-  nome: '&aQR code de pagamento'
+  nome: '&aQR Code de pagamento'
   descricao:
   - '&7Data: &f{data}'
   - '&7Jogador: &f{jogador}'
@@ -86,7 +93,7 @@ menu:
         data: 5
         nome: '&aConfirmar'
         descricao:
-        - '&7Gerar codigo &bQR &7para'
+        - '&7Gerar código &bQR &7para'
         - '&7pagar por PIX.'
     desconto:
         slot: 14
