@@ -3,7 +3,7 @@ token-mp: 'SEU TOKEN DO MERCADO PAGO'
 
 # Configuracoes do PIX
 pix:
-  # CPF, CNPJ, Celular com +55 e DDD, email ou aleatoria 
+  # CPF, CNPJ, Celular com +55 e DDD, email ou aleatoria
   chave: 'SUA CHAVE PIX'
   # Nome do beneficiario com ate 25 caracteres
   nome: 'Fulano de Tal'
@@ -16,8 +16,8 @@ pix:
 automatico:
   ativado: true
   # Em segundos para cada verificação. Valores muito baixos podem sobrecarregar o servidor.
-  intervalo: 10 
-  
+  intervalo: 10
+
 # Servidor MySQL para salvamento dos dados
 database:
   type: mysql
@@ -48,7 +48,7 @@ mapa:
   tempo-pagar: 30
   # Intervalo em SEGUNDOS que a verificacao ira ocorrer
   intervalo: 60
-  
+
 # Menus para compra de produtos por PIX
 menu:
   principal:
@@ -104,7 +104,7 @@ cupons:
         validade: 31/12/2023
         itens:
         - vip1
-    
+
 # Som ao pagamento ser validado
 som:
   ativar: true
@@ -125,22 +125,22 @@ info:
     - ' '
     - '      &9/comprarpix'
     - ' '
-    - '&8Um menu ira aparecer mostrando os produtos disponiveis.'
+    - '&8Um menu irá aparecer mostrando os produtos disponíveis.'
     2:
-    - '&8Escolha o produto que deseja e ao confirmar sera gerado um &8codigo &4&lQR.'
+    - '&8Escolha o produto que deseja e ao confirmar será gerado um &8código &4&lQR.'
     - ' '
-    - '&8Com o app do seu banco scaneie e realize o pagamento.'
+    - '&8Com o app do seu banco escaneie e realize o pagamento.'
     3:
-    - '&8Após finalizar obtenha o ID da transacao.'
+    - '&8Após finalizar obtenha o ID da transação.'
     - ' '
-    - '&8Ele e mostrado no comprovante, tem &c32 &8caracteres e começa com &8a letra &c&lE&8.'
+    - '&8Ele é mostrado no comprovante, tem &c32 &8caracteres e começa com &8a letra &c&lE&8.'
     - ' '
     - '&8Exemplo:'
     - '&7E00416968202301162037NF2oRtQ73bY'
     4:
-    - '&8Com o código em maos digite:'
+    - '&8Com o código em mãos digite:'
     - ' '
     - ' &9/pix validar <Codigo>'
     - ' '
-    - '&8seu PIX sera validado'
-    - '&8e voce receberá seu produto.'
+    - '&8seu PIX será validado'
+    - '&8e você receberá seu produto.'
