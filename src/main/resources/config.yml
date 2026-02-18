@@ -37,6 +37,8 @@ tempos:
   cancelar: 30
   top: 30
 
+# Alterar aliases requer reinício do servidor
+# Aceita apenas: a-z, 0-9, '-' e '_' (máx. 32 chars)
 aliases-comandos:
   autopix:
     - ap

@@ -1,27 +1,32 @@
 package io.github.warleysr.autopix;
 
 import java.sql.SQLException;
-import java.util.concurrent.TimeUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
+
 import io.github.warleysr.autopix.commands.APMenuCommand;
 import io.github.warleysr.autopix.commands.AutoPixCommand;
-import io.github.warleysr.autopix.commands.CommandAliasListener;
 import io.github.warleysr.autopix.domain.Order;
 import io.github.warleysr.autopix.domain.PixData;
 import io.github.warleysr.autopix.expansion.AutoPixExpansion;
 import io.github.warleysr.autopix.inventory.InventoryListener;
 import io.github.warleysr.autopix.inventory.InventoryManager;
 import io.github.warleysr.autopix.mercadopago.MercadoPagoAPI;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 
 public class AutoPix extends JavaPlugin {
     private static String PIX_KEY;
@@ -31,20 +36,22 @@ public class AutoPix extends JavaPlugin {
     private static AutoPix instance;
 
     private static final Set<String> ALLOWED_TARGETS = Set.of("autopix", "autopixmenu");
-    private final Map<String, String> aliasMap = new HashMap<>();
 
     @Override
     public void onEnable() {
         instance = this;
 
         saveDefaultConfig();
-        if (!reloadPlugin())
-            return;
+        reloadConfig();
 
         getCommand("autopix").setExecutor(new AutoPixCommand());
         getCommand("autopixmenu").setExecutor(new APMenuCommand());
 
-        Bukkit.getPluginManager().registerEvents(new CommandAliasListener(this), this);
+        registerBrigadierAliases();
+
+        if (!reloadPlugin())
+            return;
+
         Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -64,16 +71,58 @@ public class AutoPix extends JavaPlugin {
         return PIX_NAME;
     }
 
-    public Map<String, String> getAliasMap() {
-        return aliasMap;
+    private void registerBrigadierAliases() {
+        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+            final Commands commands = event.registrar();
+
+            // Lê do config aqui dentro pra garantir que, em /reload do servidor,
+            // o Paper re-registre usando a config atual (Lifecycle é reloadable).
+            Map<String, String> aliases = readAliasesFromConfig();
+
+            for (Map.Entry<String, String> entry : aliases.entrySet()) {
+                final String alias = entry.getKey();
+                final String target = entry.getValue();
+
+                if (!alias.matches("[a-z0-9_-]{1,32}")) {
+                    getLogger().warning(() -> "Alias inválido ignorado: '" + alias + "' (target: " + target + ")");
+                    continue;
+                }
+
+                // /alias -> executa /target
+                // /alias <args...> -> executa /target <args...>
+                var node = Commands.literal(alias)
+                        .executes(ctx -> {
+                            forward(ctx.getSource().getSender(), target, "");
+                            return Command.SINGLE_SUCCESS;
+                        })
+                        .then(Commands.argument("args", StringArgumentType.greedyString())
+                                .executes(ctx -> {
+                                    String args = StringArgumentType.getString(ctx, "args");
+                                    forward(ctx.getSource().getSender(), target, args);
+                                    return Command.SINGLE_SUCCESS;
+                                }))
+                        .build();
+
+                commands.register(
+                        node,
+                        "Alias para /" + target,
+                        List.of() // sem aliases aqui, porque ESTE node já é o alias
+                );
+            }
+        });
     }
 
-    private void loadAliasesFromConfig() {
-        aliasMap.clear();
+    private void forward(CommandSender sender, String target, String args) {
+        String cmd = target + (args == null || args.isBlank() ? "" : " " + args);
+        Bukkit.dispatchCommand(sender, cmd);
+    }
+
+    private Map<String, String> readAliasesFromConfig() {
+        Map<String, String> map = new HashMap<>();
 
         var section = getConfig().getConfigurationSection("aliases-comandos");
         if (section == null)
-            return;
+            return map;
 
         for (String targetCmd : section.getKeys(false)) {
             String target = targetCmd.toLowerCase();
@@ -82,28 +131,26 @@ public class AutoPix extends JavaPlugin {
                 continue;
 
             List<String> aliases = getConfig().getStringList("aliases-comandos." + targetCmd);
-
             for (String a : aliases) {
                 if (a == null)
                     continue;
+
                 String alias = a.trim().toLowerCase();
                 if (alias.isEmpty())
                     continue;
-
-                // evita alias igual ao comando real
                 if (alias.equals(target))
                     continue;
 
-                // grava alias -> comando real
-                aliasMap.put(alias, target);
+                map.put(alias, target);
             }
         }
+
+        return map;
     }
 
     public static boolean reloadPlugin() {
         AutoPix plugin = getInstance();
         plugin.reloadConfig();
-        plugin.loadAliasesFromConfig();
 
         PIX_KEY = plugin.getConfig().getString("pix.chave");
         PIX_NAME = plugin.getConfig().getString("pix.nome");
