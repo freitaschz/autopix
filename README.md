@@ -1,6 +1,6 @@
 # AutoPix
 
-O AutoPix é um plugin Spigot que integra <b>código QR</b> PIX dentro do Minecraft e permite que os jogadores comprem itens e recebam automaticamente em questão de segundos.
+AutoPix é um plugin para **Spigot/Paper 1.13+** (testado) que integra **pagamentos via PIX com QR Code dentro do Minecraft**, permitindo que jogadores comprem produtos e recebam automaticamente em segundos.
 
 ## Como funciona?
 
@@ -45,9 +45,8 @@ inventários que execute o comando.
 
 ## Permissões
 
-`autopix.use` - permite realizar compras por PIX
-
-`autopix.admin` - permite ver a lista de pedidos de outros jogadores e dar reload no plugin
+- `autopix.use` - permite realizar compras por PIX
+- `autopix.admin` - permite ver a lista de pedidos de outros jogadores e dar reload no plugin
 
 ## Outras features
 
@@ -55,11 +54,49 @@ inventários que execute o comando.
 - Limite de tempo entre as ações para evitar sobrecarga no servidor
 - Múltiplos menus
 
+## Compatibilidade
+
+- Spigot/Paper 1.13+ (testado)
+- Java 21
+- Banco: SQLite/MySQL
+
 ## Vídeos demonstrativos
 
 <https://youtu.be/vVs14RqBq3Q>
 
 <https://youtu.be/38rZIy0lXbM>
+
+## Compilação (build)
+
+O projeto utiliza **Maven** para gerenciamento de dependências e build.
+
+### Pré-requisitos
+
+- Java 21
+- Maven 3.9+
+
+Verifique:
+
+```bash
+java -version
+mvn -v
+```
+
+Ambos devem indicar Java 21
+
+### Compilar o projeto
+
+Na raiz do projeto, execute:
+
+```bash
+mvn clean package
+```
+
+O arquivo `.jar` será gerado em:
+
+```bash
+target/autopix-<versao>.jar
+```
 
 ## Download e instalação
 
