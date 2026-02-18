@@ -42,9 +42,11 @@ tempos:
 aliases-comandos:
   autopix:
     - ap
+    - pix
   autopixmenu:
     - apm
     - apmenu
+    - pixmenu
 
 # Mapa de pagamento
 mapa:
