@@ -18,10 +18,11 @@ automatico:
   # Em segundos para cada verificação. Valores muito baixos podem sobrecarregar o servidor.
   intervalo: 10
 
-# Servidor MySQL para salvamento dos dados
+# Tipos disponiveis: mysql, sqlite
 database:
-  type: mysql
-  db: tests
+  type: sqlite
+  db: autopix
+  # Preencha abaixo em caso de MySQL:
   host: localhost
   port: 3306
   user: root
@@ -83,13 +84,13 @@ menu:
     cancelar:
       slot: 19
       icone:
-        material: wool
+        material: RED_WOOL
         data: 14
         nome: '&cCancelar'
     confirmar:
       slot: 27
       icone:
-        material: wool
+        material: GREEN_WOOL
         data: 5
         nome: '&aConfirmar'
         descricao:
